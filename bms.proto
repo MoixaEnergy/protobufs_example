@@ -1,0 +1,27 @@
+option java_package="com.moixa.bms";
+
+enum BatteryState {
+     CHARGE_FROM_MAINS = 1;
+     CHARGE_FROM_PV = 2;     
+     DO_NOT_CHARGE = 3;
+}
+
+message BmsSetState {
+     required BatteryState state = 1;
+}
+
+message BmsStatus {
+     optional int32 voltage = 1;
+}
+
+enum MessageType { 
+  STATUS = 1; 
+  SET_STATE = 2; 
+}
+
+message BmsMessage {
+     required MessageType messageType = 1;
+
+     optional BmsStatus status = 2;
+     optional BmsSetState set_state = 3;
+}
