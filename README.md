@@ -28,7 +28,7 @@ the same as bms.scala.out.
 You can decode from both files with the same result.
 
      ./test_decode < bms.c.out
-     ./test_decode < bms.scala
+     ./test_decode < bms.scala.out
 
      
     
