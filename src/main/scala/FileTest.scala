@@ -20,7 +20,7 @@ object FileTest {
     assert(msg == nmsg, "input and output don't match")
   }
 
-  def main2(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit = {
     test
   }  
 }
