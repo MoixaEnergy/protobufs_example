@@ -6,8 +6,27 @@ bool print_bms(pb_istream_t *stream)
 {
   BmsMessage msg;
 
-  if (!pb_decode(stream, BmsMessage_fields, &msg))
+  if (!pb_decode(stream, ZigbeeMessage_fields, &msg))
     return false;
+
+  switch (msg.source) {
+  case DeviceType_MOIXA_HUB:
+    printf("from moixa hub");
+  case DeviceType_BMS:
+    printf("from bms");
+  case DeviceType_MCS:
+    printf("from mcs");
+  }
+
+  switch (msg.source) {
+  case DeviceType_MOIXA_HUB:
+    printf("from moixa hub");
+  case DeviceType_BMS:
+    printf("from bms");
+  case DeviceType_MCS:
+    printf("from mcs");
+  }
+
 
   switch (msg.messageType)
     {

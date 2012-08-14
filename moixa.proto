@@ -1,0 +1,68 @@
+option java_package="com.moixa.protocol";
+
+enum DeviceType {
+    MOIXA_HUB = 0;
+    BMS = 1;
+    MCS = 2; // multi channel sensor 
+}
+
+message ZigbeeAddress {
+    required DeviceType dtype = 1;
+    required fixed64 ieee = 2;  // 64 bit zigbee address
+}
+
+message ZigbeeMessage  {
+    required ZigbeeAddress source = 1;  // message to look for based on source
+    required ZigbeeAddress destination = 2;
+    optional BmsMessage bmsMessage = 3;
+    optional McsMessage mcsMessage = 4;
+    
+}
+
+enum McsMessageType { 
+    MCS_STATUS = 1; 
+}
+
+message McsMessage {
+    required McsMessageType messageType = 1;
+    optional McsStatus status = 2;       
+}
+
+message McsClamp {
+    required int32 clampNum = 1;
+    required double reading = 2;
+}
+
+message McsStatus {
+     repeated McsClamp clamps = 1;
+     optional int32 carbondioxide = 2;
+     optional int32 temperature = 3;
+     optional int32 humidity = 4;
+}
+
+enum BatteryState {
+     CHARGE_FROM_MAINS = 1;
+     CHARGE_FROM_PV = 2;     
+     DO_NOT_CHARGE = 3;
+}
+
+message BmsSetState {
+     required BatteryState state = 1;
+}
+
+message BmsStatus {
+     optional int32 voltage = 1;
+}
+
+enum BmsMessageType { 
+  STATUS = 1; 
+  SET_STATE = 2; 
+}
+
+message BmsMessage {
+     required BmsMessageType messageType = 1;
+
+     optional BmsStatus status = 2;
+     optional BmsSetState set_state = 3;
+}
+

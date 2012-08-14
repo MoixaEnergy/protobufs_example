@@ -7,7 +7,7 @@
 
 ## scala code
 
-    scala lib/scalabuff_2.9.2-0.9-SNAPSHOT.jar  --scala_out=src/main/scala/ bms.proto
+    scala lib/scalabuff_2.9.2-0.9-SNAPSHOT.jar  --scala_out=src/main/scala/ moixa.proto
 
 # Running
 
