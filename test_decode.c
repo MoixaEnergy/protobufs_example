@@ -1,43 +1,81 @@
 #include <stdio.h>
 #include <pb_decode.h>
-#include "bms.pb.h"
+#include "moixa.pb.h"
 
-bool print_bms(pb_istream_t *stream)
+void print_bms(BmsMessage msg) 
 {
-  BmsMessage msg;
+  switch (msg.messageType)
+    {
+    case BmsMessageType_STATUS:
+      printf("type STATUS");
+      printf(" voltage %i ", msg.status.voltage);
+      break;
+    case BmsMessageType_SET_STATE:
+      printf("type SET STATE");
+      break;
+    }  
+}
+
+/*
+void print_bms(BmsMessage *msg) 
+{
+  switch (msg->messageType)
+    {
+    case BmsMessageType_STATUS:
+      printf("type STATUS");
+      printf(" voltage %i ", msg->status->voltage);
+      break;
+    case BmsMessageType_SET_STATE:
+      printf("type SET STATE");
+      break;
+    }  
+    }
+*/
+
+void print_mcs(McsStatus msg)
+{
+  int i;
+  for (i=0; i < msg.clamps_count; i++)
+    {
+      McsClamp *clamp = &msg.clamps[i];
+      printf("clamp num %i ", clamp->clampNum);
+      printf("  reading %f \n", clamp->reading);
+    }
+}
+
+bool print_zigbee_message(pb_istream_t *stream)
+{
+  ZigbeeMessage msg;
 
   if (!pb_decode(stream, ZigbeeMessage_fields, &msg))
     return false;
 
-  switch (msg.source) {
+  switch (msg.source.dtype) {
   case DeviceType_MOIXA_HUB:
     printf("from moixa hub");
-  case DeviceType_BMS:
-    printf("from bms");
+    break;   
   case DeviceType_MCS:
     printf("from mcs");
+    print_mcs(msg.mcsMessage.status);
+    break;
+  case DeviceType_BMS:
+    printf("from bms");
+    print_bms(msg.bmsMessage);
+    break;
   }
 
-  switch (msg.source) {
+  switch (msg.destination.dtype) {
   case DeviceType_MOIXA_HUB:
-    printf("from moixa hub");
-  case DeviceType_BMS:
-    printf("from bms");
+    printf("to moixa hub");
+    break;
   case DeviceType_MCS:
-    printf("from mcs");
+    printf("to mcs");
+    break;
+  case DeviceType_BMS:
+    printf("to bms");
+    break;
   }
 
-
-  switch (msg.messageType)
-    {
-    case MessageType_STATUS:
-      printf("type STATUS");
-      printf(" voltage %i ", msg.status.voltage);
-      break;
-    case MessageType_SET_STATE:
-      printf("type SET STATE");
-      break;
-    }
   return true;
 }
 
@@ -51,7 +89,7 @@ int main()
     pb_istream_t stream = pb_istream_from_buffer(buffer, count);
     
     /* Decode and print out the stuff */
-    if (!print_bms(&stream))
+    if (!print_zigbee_message(&stream))
     {
         printf("Parsing failed.\n");
         return 1;

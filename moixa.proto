@@ -1,3 +1,4 @@
+import "nanopb.proto";
 option java_package="com.moixa.protocol";
 
 enum DeviceType {
@@ -8,7 +9,7 @@ enum DeviceType {
 
 message ZigbeeAddress {
     required DeviceType dtype = 1;
-    required fixed64 ieee = 2;  // 64 bit zigbee address
+    required fixed64 deviceId = 2;  // 64 bit zigbee address
 }
 
 message ZigbeeMessage  {
@@ -30,14 +31,14 @@ message McsMessage {
 
 message McsClamp {
     required int32 clampNum = 1;
-    required double reading = 2;
+    required float reading = 2;
 }
 
 message McsStatus {
-     repeated McsClamp clamps = 1;
-     optional int32 carbondioxide = 2;
-     optional int32 temperature = 3;
-     optional int32 humidity = 4;
+     optional int32 carbondioxide = 1;
+     optional int32 temperature = 2;
+     optional int32 humidity = 3;
+     repeated McsClamp clamps = 4 [(nanopb).max_count = 6];
 }
 
 enum BatteryState {

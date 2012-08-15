@@ -21,8 +21,11 @@ object FileTest {
       None,
       Some(McsMessage( 
         McsMessageType.MCS_STATUS, 
-        Some(McsStatus(Vector(McsClamp(1, 33.333),McsClamp(2, 66.898)), Some(30), None, Some(77)))
-        )))    
+        Some(
+          McsStatus(
+            Some(30), None, Some(77),
+            Vector(McsClamp(1, 33.333f),McsClamp(2, 66.898f)))))))
+        
 
 
   def test(fileName: String, msg: ZigbeeMessage) = { 
