@@ -4,7 +4,7 @@
   <defaultConf>0</defaultConf>
   <confs>
     <conf name="default" type="2">
-      <platformToolSN>:=MPLABCommUSB:=04D8:=00E0:=0000:=Microchip Technology Inc.:=PIC32MX Starter Kit  (C) 2007:=JIT081795618:=x:=en</platformToolSN>
+      <platformToolSN></platformToolSN>
       <languageToolchainDir>/opt/microchip/xc32/v1.10/bin</languageToolchainDir>
       <mdbdebugger version="1">
         <placeholder1>place holder 1</placeholder1>

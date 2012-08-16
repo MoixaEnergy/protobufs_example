@@ -10,9 +10,9 @@ CND_CONF=default
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/Explorer16PIC32MX_1.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-OUTPUT_BASENAME=Explorer16PIC32MX_1.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-PACKAGE_TOP_DIR=explorer16pic32mx1.x/
+OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/protobufs_example.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_BASENAME=protobufs_example.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+PACKAGE_TOP_DIR=protobufsexample/
 
 # Functions
 function checkReturnCode
@@ -57,15 +57,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/explorer16pic32mx1.x/bin
+makeDirectory ${TMPDIR}/protobufsexample/bin
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/package/explorer16pic32mx1.x.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/package/protobufsexample.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/explorer16pic32mx1.x.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/protobufsexample.tar *
 checkReturnCode
 
 # Cleanup

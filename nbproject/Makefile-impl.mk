@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Explorer16PIC32MX_1.X
+PROJECTNAME=protobufs_example
 
 # Active Configuration
 DEFAULTCONF=default

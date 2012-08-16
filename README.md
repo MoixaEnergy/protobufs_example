@@ -3,6 +3,12 @@
 
 ## c code
 
+Gen protobufs:
+
+    protoc -I. -Inanopb/generator -I/usr/include -omoixa.pb moixa.proto
+
+Then
+
     make
 
 ## scala code

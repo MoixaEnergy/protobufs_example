@@ -49,12 +49,17 @@ CP=cp
 CCADMIN=CCadmin
 RANLIB=ranlib
 
+CFLAGS=-ansi -Wall -Werror -I nanopb -g -O0
+DEPS=nanopb/pb_decode.c nanopb/pb_decode.h nanopb/pb_encode.c nanopb/pb_encode.h nanopb/pb.h
 
 # build
 build: .build-post
 
 .build-pre:
-# Add your pre 'build' code here...
+	protoc -I. -Inanopb/generator -I/usr/include -omoixa.pb moixa.proto
+	python2 nanopb/generator/nanopb_generator.py moixa.pb
+	sed 's/<pb.h>/"pb.h"/' moixa.pb.h > moixa.pb.h.new
+	mv moixa.pb.h.new  moixa.pb.h
 
 .build-post: .build-impl
 # Add your post 'build' code here...
@@ -81,10 +86,13 @@ clobber: .clobber-post
 
 
 # all
-all: .all-post
+all: .all-post 
 
 .all-pre:
 # Add your pre 'all' code here...
+
+%: %.c $(DEPS) moixa.pb.h moixa.pb.c
+	$(CC) $(CFLAGS) -o $@ $< nanopb/pb_decode.c nanopb/pb_encode.c moixa.pb.c	
 
 .all-post: .all-impl
 # Add your post 'all' code here...
@@ -98,7 +106,6 @@ help: .help-post
 
 .help-post: .help-impl
 # Add your post 'help' code here...
-
 
 
 # include project implementation makefile

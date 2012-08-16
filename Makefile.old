@@ -4,7 +4,7 @@ DEPS=nanopb/pb_decode.c nanopb/pb_decode.h nanopb/pb_encode.c nanopb/pb_encode.h
 all: test_encode test_decode
 
 clean:
-	rm -f client moixa.pb moixa.pb.c moixa.pb.h test_encode test_decode
+	rm -f moixa.pb moixa.pb.c moixa.pb.h test_encode test_decode
 
 %: %.c $(DEPS) moixa.pb.h moixa.pb.c
 	$(CC) $(CFLAGS) -o $@ $< nanopb/pb_decode.c nanopb/pb_encode.c moixa.pb.c 
