@@ -3,17 +3,18 @@
 
 ## c code
 
-Gen protobufs:
-
-    protoc -I. -Inanopb/generator -I/usr/include -omoixa.pb moixa.proto
-
-Then
+For pic32:
 
     make
 
+For pc:
+    
+    make -f Makefile.pc
+
 ## scala code
 
-    scala lib/scalabuff_2.9.2-0.9-SNAPSHOT.jar  --scala_out=src/main/scala/ moixa.proto
+    sed 's/\[(nanopb).*/;/' moixa.proto > moixa.proto.scala
+    scala lib/scalabuff_2.9.2-0.9-SNAPSHOT.jar  --scala_out=src/main/scala/ moixa.proto.scala
 
 # Running
 
@@ -24,7 +25,7 @@ Then
     
 This generates bms.scala.out    
     
-## C Code
+## C Code (on PC)
 
      ./test_encode
 
@@ -33,8 +34,8 @@ the same as bms.scala.out.
 
 You can decode from both files with the same result.
 
-     ./test_decode < bms.c.out
-     ./test_decode < bms.scala.out
+     ./test_decode < mcs.c.out
+     ./test_decode < moixa.mcs.scala.out
 
      
     
