@@ -15,6 +15,7 @@ For pc:
 
     sed 's/\[(nanopb).*/;/' moixa.proto > moixa.proto.scala
     scala lib/scalabuff_2.9.2-0.9-SNAPSHOT.jar  --scala_out=src/main/scala/ moixa.proto.scala
+    rm moixa.proto.scala
 
 # Running
 
