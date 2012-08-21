@@ -1,4 +1,4 @@
-//import AssemblyKeys._ 
+import AssemblyKeys._ 
 
 name := "ProtobufsTest"
 
@@ -25,7 +25,7 @@ libraryDependencies ++= Seq(
   "org.scala-tools.time" % "time_2.9.1" % "0.5",
   "org.scalaz" %% "scalaz-core" % "6.0.4",
   "com.github.scala-incubator.io" %% "scala-io-core" % "0.4.0",
-  "com.github.scala-incubator.io" %% "scala-io-file" % "0.4.0"
+  "com.github.scala-incubator.io" %% "scala-io-file" % "0.4.0"  
 )
 
 resolvers += "Java.net Maven 2 Repo" at "http://download.java.net/maven/2"
@@ -38,6 +38,8 @@ resolvers ++= Seq(
 libraryDependencies += "org.clapper" % "avsl_2.9.1" % "0.3.8"
 
 scalacOptions += "-deprecation"
+
+assemblySettings
 
 // TaskKey[Unit]("gen_proto") := net.sandrogrzicic.scalabuff.compiler.ScalaBuff("bms.proto")
 
