@@ -50,7 +50,11 @@ object SerialTest {
     val reader = new Thread(new SerialReader(inputStream))
     reader.start
     outputStream.write( "test".toCharArray.map( _.byteValue ) )
+    Thread.sleep(5000)
+    val msg = FileTest.mcsMsg
+    outputStream.write(msg.toByteArray)
     Thread.sleep(10000)
+    reader.stop
     port.close()
   }
 
