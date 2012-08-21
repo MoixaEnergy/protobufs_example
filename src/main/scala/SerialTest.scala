@@ -19,12 +19,13 @@ object SerialTest {
     }
   }
 
-  val deviceFile = "/dev/ttyAMA0"
+  //val deviceFile = "/dev/ttyAMA0"
 
   //val inputStream: InputStream
   //val outputStream: OutputStream
 
   def main(args: Array[String]) = { 
+    val deviceFile = args(0)
     val portList = CommPortIdentifier.getPortIdentifiers
     portList.toList.foreach { p =>
       val port = p.asInstanceOf[CommPortIdentifier]
