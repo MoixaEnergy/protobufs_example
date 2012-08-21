@@ -12,7 +12,8 @@ object SerialTest {
       println("running reader")
       while (true) {
         if (in.available > 0) {
-          println("reading : " + in.read() )
+          val bt = in.read()
+          println("reading : " + bt + ":: " + bt.toChar )
           //in.
         }
       }
@@ -50,6 +51,7 @@ object SerialTest {
     reader.start
     outputStream.write( "test".toCharArray.map( _.byteValue ) )
     Thread.sleep(10000)
+    port.close()
   }
 
   
