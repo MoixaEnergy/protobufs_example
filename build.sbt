@@ -19,6 +19,7 @@ resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/release
 
 libraryDependencies ++= Seq(
   // "net.sandrogrzicic" % "ScalaBuff" % "0.9-SNAPSHOT",
+  "moixa.com" % "asyncframe" % "0.1",
   "com.google.protobuf" % "protobuf-java" % "2.4.1",
   "com.weiglewilczek.slf4s" % "slf4s_2.9.1" % "1.0.7",
   "org.specs2" %% "specs2" % "1.10" % "test",
