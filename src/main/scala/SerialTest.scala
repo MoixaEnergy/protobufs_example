@@ -9,16 +9,13 @@ import com.moixa.asyncFrame.FramedMessage
 
 object SerialTest {
 
-  class SerialReader(in: InputStream) extends Runnable {
+  class SerialReader(in: InputStream) extends SerialPortEventListener {
+    def receiver = FramedMessage.receiver(in);
 
-    def run = {
-      def receiver = FramedMessage.receiver(in);
-      println("running reader")
-      while (true) {
-        receiver.receiveMessage match {
-          case Left(error) => println("Error: " + error)
-          case Right(bytes) => println("Message: " + new String(bytes.map(_.toByte).toArray))
-        }
+    def serialEvent(event: SerialPortEvent) = {
+      receiver.receiveMessage match {
+        case Left(error) => println("Error: " + error)
+        case Right(bytes) => println("Message: " + new String(bytes.map(_.toByte).toArray))
       }
     }
   }
@@ -41,12 +38,9 @@ object SerialTest {
       19200, SerialPort.DATABITS_8,
       SerialPort.STOPBITS_1,
       SerialPort.PARITY_NONE)
-    //port.set
-    val inputStream = port.getInputStream();
-    val reader = new Thread(new SerialReader(inputStream))
-    reader.setDaemon(true)
-    reader.start
-    Thread.sleep(5000)
+
+    port.addEventListener(new SerialReader(port.getInputStream()))
+    port.notifyOnDataAvailable(true);
 
     val msg = FileTest.mcsMsg
     val outputStream = port.getOutputStream()
@@ -59,12 +53,13 @@ object SerialTest {
     println("writing message of " + bytes.length + " bytes")
     outputStream.write(bytes)
 
-    Thread.sleep(10000)
-    println("end")
-    // reader.stop
-    port.close()
+    // Give the reader enough time to revceive the response
+    Thread.sleep(2000)
 
-    System.exit(0);
+    port.removeEventListener()
+
+    println("end")
+    port.close()
   }
 
 }
