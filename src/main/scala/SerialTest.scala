@@ -57,7 +57,6 @@ object SerialTest {
     Thread.sleep(2000)
 
     port.removeEventListener()
-
     println("end")
     port.close()
   }
