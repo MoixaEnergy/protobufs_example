@@ -1,21 +1,33 @@
 package com.moixa
 
-import java.io.{ InputStream, OutputStream, FileDescriptor, File }
+import java.io.InputStream
 import scala.collection.JavaConversions._
 import gnu.io._
-import java.io.ByteArrayOutputStream
-import com.moixa.asyncFrame.AsyncFrameOutputStream
+import proto.core._
+import proto.datalink._
 import com.moixa.asyncFrame.FramedMessage
 
 object SerialTest {
 
   class SerialReader(in: InputStream) extends SerialPortEventListener {
-    def receiver = FramedMessage.receiver(in);
+    val reader = new InputTokenReader(in)
+    var state: FrameState = LookingForFrameBoundary
 
     def serialEvent(event: SerialPortEvent) = {
-      receiver.receiveMessage match {
-        case Left(error) => println("Error: " + error)
-        case Right(bytes) => println("Message: " + new String(bytes.map(_.toByte).toArray))
+      while (in.available > 0) {
+        state = state.receiveToken(reader.read)
+
+        state match {
+          case fc: FrameComplete => {
+            println("Message: " + new String(fc.frame.body.toByteArray))
+            state = LookingForFrameBoundary
+          }
+          case e: ErrorState => {
+            println(e.error)
+            state = LookingForFrameBoundary
+          }
+          case _ => // nothing
+        }
       }
     }
   }
@@ -45,13 +57,9 @@ object SerialTest {
     val msg = FileTest.mcsMsg
     val outputStream = port.getOutputStream()
 
-    val bos = new ByteArrayOutputStream
-    val sender = FramedMessage.sender(bos)
-    sender.writeMessage(msg.toByteArray().map(_.toInt))
-    val bytes = bos.toByteArray()
-
-    println("writing message of " + bytes.length + " bytes")
-    outputStream.write(bytes)
+    val frame = Frame(msg.toByteArray())
+    val sender = FramedMessage.sender(outputStream)
+    sender.writeFrame(frame)
 
     // Give the reader enough time to revceive the response
     Thread.sleep(2000)
