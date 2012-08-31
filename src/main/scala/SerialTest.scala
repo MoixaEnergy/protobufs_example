@@ -3,31 +3,32 @@ package com.moixa
 import java.io.InputStream
 import scala.collection.JavaConversions._
 import gnu.io._
+
 import proto.core._
 import proto.datalink._
-import com.moixa.asyncFrame.FramedMessage
+import proto.network._
 
 object SerialTest {
 
+  object MessageLogger extends PacketReceiver {
+    def protocols = List(0xff)
+
+    def receivePacket(p: Packet) {
+      println("Message: " + new String(p.body.toByteArray))
+    }
+  }
+
   class SerialReader(in: InputStream) extends SerialPortEventListener {
+    val switch = new PacketSwitch(List(MessageLogger))
+    val fsDecoder = new FrameStateDecoder(switch)
+    val tokenDriver = new InputTokenDriver(fsDecoder)
+
     val reader = new InputTokenReader(in)
     var state: FrameState = LookingForFrameBoundary
 
     def serialEvent(event: SerialPortEvent) = {
       while (in.available > 0) {
-        state = state.receiveToken(reader.read)
-
-        state match {
-          case fc: FrameComplete => {
-            println("Message: " + new String(fc.frame.body.toByteArray))
-            state = LookingForFrameBoundary
-          }
-          case e: ErrorState => {
-            println(e.error)
-            state = LookingForFrameBoundary
-          }
-          case _ => // nothing
-        }
+        tokenDriver.processByte(in.read)
       }
     }
   }
@@ -55,11 +56,12 @@ object SerialTest {
     port.notifyOnDataAvailable(true);
 
     val msg = FileTest.mcsMsg
-    val outputStream = port.getOutputStream()
+    val packet = new Packet(0x01, QuadAddress.ZERO, QuadAddress.ZERO, OctetData(msg.toByteArray().map(Octet(_)).toList))
+    val frame = Frame(packet)
 
-    val frame = Frame(msg.toByteArray())
-    val sender = FramedMessage.sender(outputStream)
-    sender.writeFrame(frame)
+    val outputStream = port.getOutputStream()
+    val fos = new FrameOutputStream(outputStream)
+    fos.writeFrame(frame)
 
     // Give the reader enough time to revceive the response
     Thread.sleep(2000)
