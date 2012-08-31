@@ -6,7 +6,7 @@ organization := "com.moixa"
 
 // version := "0.2.2-SNAPSHOT"
 
-version := "0.0.1"
+version := "0.0.2"
 
 scalaVersion := "2.9.2"
 
@@ -19,7 +19,7 @@ resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/release
 
 libraryDependencies ++= Seq(
   // "net.sandrogrzicic" % "ScalaBuff" % "0.9-SNAPSHOT",
-  "moixa.com" % "moixa-proto" % "0.1",
+  "moixa.com" % "moixa-proto" % "0.2",
   "com.google.protobuf" % "protobuf-java" % "2.4.1",
   "com.weiglewilczek.slf4s" % "slf4s_2.9.1" % "1.0.7",
   "org.specs2" %% "specs2" % "1.10" % "test",

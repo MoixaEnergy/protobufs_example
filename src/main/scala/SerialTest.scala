@@ -63,7 +63,7 @@ object SerialTest {
     val fos = new FrameOutputStream(outputStream)
     fos.writeFrame(frame)
 
-    // Give the reader enough time to revceive the response
+    // Give the reader enough time to receive the response
     Thread.sleep(2000)
 
     port.removeEventListener()
