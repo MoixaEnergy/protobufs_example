@@ -19,7 +19,7 @@ resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/release
 
 libraryDependencies ++= Seq(
   // "net.sandrogrzicic" % "ScalaBuff" % "0.9-SNAPSHOT",
-  "moixa.com" % "moixa-proto" % "0.2",
+  "com.moixa" % "moixa-proto" % "0.3-SNAPSHOT",
   "com.google.protobuf" % "protobuf-java" % "2.4.1",
   "com.weiglewilczek.slf4s" % "slf4s_2.9.1" % "1.0.7",
   "org.specs2" %% "specs2" % "1.10" % "test",
