@@ -1,115 +1,20 @@
-#
-#  There exist several targets which are by default empty and which can be 
-#  used for execution of your targets. These targets are usually executed 
-#  before and after some main targets. They are: 
-#
-#     .build-pre:              called before 'build' target
-#     .build-post:             called after 'build' target
-#     .clean-pre:              called before 'clean' target
-#     .clean-post:             called after 'clean' target
-#     .clobber-pre:            called before 'clobber' target
-#     .clobber-post:           called after 'clobber' target
-#     .all-pre:                called before 'all' target
-#     .all-post:               called after 'all' target
-#     .help-pre:               called before 'help' target
-#     .help-post:              called after 'help' target
-#
-#  Targets beginning with '.' are not intended to be called on their own.
-#
-#  Main targets can be executed directly, and they are:
-#  
-#     build                    build a specific configuration
-#     clean                    remove built files from a configuration
-#     clobber                  remove all built files
-#     all                      build all configurations
-#     help                     print help mesage
-#  
-#  Targets .build-impl, .clean-impl, .clobber-impl, .all-impl, and
-#  .help-impl are implemented in nbproject/makefile-impl.mk.
-#
-#  Available make variables:
-#
-#     CND_BASEDIR                base directory for relative paths
-#     CND_DISTDIR                default top distribution directory (build artifacts)
-#     CND_BUILDDIR               default top build directory (object files, ...)
-#     CONF                       name of current configuration
-#     CND_ARTIFACT_DIR_${CONF}   directory of build artifact (current configuration)
-#     CND_ARTIFACT_NAME_${CONF}  name of build artifact (current configuration)
-#     CND_ARTIFACT_PATH_${CONF}  path to build artifact (current configuration)
-#     CND_PACKAGE_DIR_${CONF}    directory of package (current configuration)
-#     CND_PACKAGE_NAME_${CONF}   name of package (current configuration)
-#     CND_PACKAGE_PATH_${CONF}   path to package (current configuration)
-#
-# NOCDDL
+CFLAGS=-ansi -Wall -Werror -I . -g -O0
+DEPS=pb_decode.c pb_decode.h pb_encode.c pb_encode.h pb.h
 
+all: test_encode test_decode
 
-# Environment 
-MKDIR=mkdir
-CP=cp
-CCADMIN=CCadmin
-RANLIB=ranlib
+clean:
+	rm -f moixa.pb moixa.pb.c moixa.pb.h siemens.pb siemens.pb.h siemens.pb.c test_encode test_decode
 
-CFLAGS=-ansi -Wall -Werror -I nanopb -g -O0
-DEPS=nanopb/pb_decode.c nanopb/pb_decode.h nanopb/pb_encode.c nanopb/pb_encode.h nanopb/pb.h
+%: %.c $(DEPS) moixa.pb.h moixa.pb.c siemens.pb.h siemens.pb.c
+	$(CC) $(CFLAGS) -o $@ $< pb_decode.c pb_encode.c moixa.pb.c 
 
-# build
-build: .build-post
+siemens.pb.c siemens.pb.h: siemens.proto nanopb/generator/nanopb_generator.py
+	protoc -I. -Inanopb/generator -I/usr/include -osiemens.pb $<
+	python2 nanopb/generator/nanopb_generator.py siemens.pb
+  
 
-.build-pre:
-	protoc -I. -Inanopb/generator -I/usr/include -omoixa.pb moixa.proto
+moixa.pb.c moixa.pb.h: moixa.proto nanopb/generator/nanopb_generator.py
+	protoc -I. -Inanopb/generator -I/usr/include -omoixa.pb $<
 	python2 nanopb/generator/nanopb_generator.py moixa.pb
-	sed 's/<pb.h>/"pb.h"/' moixa.pb.h > moixa.pb.h.new
-	mv moixa.pb.h.new  moixa.pb.h
 
-.build-post: .build-impl
-# Add your post 'build' code here...
-
-
-# clean
-clean: .clean-post
-
-.clean-pre:
-# Add your pre 'clean' code here...
-
-.clean-post: .clean-impl
-# Add your post 'clean' code here...
-
-
-# clobber
-clobber: .clobber-post
-
-.clobber-pre:
-# Add your pre 'clobber' code here...
-
-.clobber-post: .clobber-impl
-# Add your post 'clobber' code here...
-
-
-# all
-all: .all-post 
-
-.all-pre:
-# Add your pre 'all' code here...
-
-%: %.c $(DEPS) moixa.pb.h moixa.pb.c
-	$(CC) $(CFLAGS) -o $@ $< nanopb/pb_decode.c nanopb/pb_encode.c moixa.pb.c	
-
-.all-post: .all-impl
-# Add your post 'all' code here...
-
-
-# help
-help: .help-post
-
-.help-pre:
-# Add your pre 'help' code here...
-
-.help-post: .help-impl
-# Add your post 'help' code here...
-
-
-# include project implementation makefile
-include nbproject/Makefile-impl.mk
-
-# include project make variables
-include nbproject/Makefile-variables.mk

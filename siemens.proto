@@ -1,0 +1,65 @@
+import "nanopb.proto";
+option java_package="com.moixa.siemens.protobuf";
+
+
+// This is the message that will be carried by the SiemensMessage protocol.
+// It will either contain a SiemensReadings (if being sent by the PIC to the Pi)
+// or it will contain a ForecastValues (if being sent by the Pi to the PIC).
+message SiemensMessage {
+    optional SiemensReadings readings = 1;
+    optional ForecastValues forecasts = 2;
+}
+
+// Indicates whether the Studer is currently charging the battery from the
+// mains (PUSH), drawing current from the batter to supply the mains (PULL)
+// or neither (OFF).
+enum StuderStatus {
+    OFF = 0;
+    PUSH = 1;
+    PULL = 2;
+}
+
+// The three readings structures are each optional, but it is likely that
+// all three will be present in each message arriving from the PIC 
+message SiemensReadings {
+    optional StuderStatus studerStatus = 1;
+    optional ChargeControllerReadings ccReadings = 2;
+    optional P50MeterReadings p50Readings = 3;
+}
+
+// These are collected from the charge controller and sent to the PIC via
+// MODBUS. The MODBUS values are integers and must be converted to floats
+// within the PIC code before being encoded into the message by applying the
+// appropriate conversion factor (as documented in the Message Protocol spec)
+message ChargeControllerReadings {
+    required float batteryCurrent = 1;      // amps
+    required float chargerCurrent = 2;      // amps
+    required float loadCurrent = 3;         // amps
+    required float batteryVoltage = 4;      // volts
+}
+
+// These are collected from the P50 electricity meter and sent to the PIC via
+// MODBUS. The MODBUS values are integers and must be converted to floats
+// (where necessary) within the PIC code before being encoded into the message,
+// by applying the appropriate conversion factor (as documented in the Message 
+// Protocol spec)
+message P50MeterReadings {
+    required float mainsVoltage = 1;        // volts
+    required float mainsCurrent = 2;        // amps
+    required int32 realPower = 3;           // watts
+    required int32 reactivePower = 4;       // watts
+    required float powerFactor = 5;         // no units
+}
+
+message ForecastValues {
+    required EightHourForecastArray dcLoad = 1;                     // watt hours
+    required EightHourForecastArray acLoad = 2;                     // watt hours
+    required EightHourForecastArray pvEnergy = 3;                   // watt hours
+    required EightHourForecastArray batteryStoredEnergy = 4;        // watt hours
+    required EightHourForecastArray batteryUnusedCapacity = 5;      // watt hours
+}
+
+// Values at 15 minute intervals. This *must* contain 32 values or else!
+message EightHourForecastArray {
+    repeated int32 value = 1;
+}
